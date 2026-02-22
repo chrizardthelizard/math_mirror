@@ -9,9 +9,9 @@
 &lt;li&gt;The fluid we are working with is incompressible, and the pipes/reactors are completely filled.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;We can consider a very simple plant network. Two units with a recycle loop, connected by four streams. &lt;/p&gt;
-&lt;p&gt;&lt;img alt="Simple Plant Layout" src="images/simple_layout.svg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Simple Plant Layout" src="./content/images/simple_layout.svg"&gt;&lt;/p&gt;
 &lt;p&gt;This can be represented as a graph: &lt;/p&gt;
-&lt;p&gt;&lt;img alt="Simple Plant Graph" src="images/simple_graph.svg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Simple Plant Graph" src="./content/images/simple_graph.svg"&gt;&lt;/p&gt;
 &lt;p&gt;let us make an example layout, with units A, B, and C as nodes, and streams 1 through 4 as edges. We can do this with networkx.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# make simple example problem&lt;/span&gt;
 &lt;span class="n"&gt;g&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DiGraph&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -27,7 +27,7 @@
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img alt="Simple Graph" src="../images/nx_graph.svg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Simple Graph" src="./content/images/nx_graph.svg"&gt;&lt;/p&gt;
 &lt;p&gt;The work done back in 1988 by Kretsovalis and Mah [&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;1&lt;/a&gt;&lt;/sup&gt;] introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. A simple explanation of this algorithm is as follows: &lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Remove all streams where the overall mass flow rate is measured, making a new subgraph &lt;span class="math"&gt;\(G_m\)&lt;/span&gt;.&lt;/li&gt;
