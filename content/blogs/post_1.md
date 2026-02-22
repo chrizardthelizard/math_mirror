@@ -42,13 +42,9 @@ g.add_edges_from([
 
 ![Simple Graph](./content/images/nx_graph.svg)
 
-The work done back in 1988 by Kretsovalis and Mah [[^fn1]] introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. A simple explanation of this algorithm is as follows: 
+The work done back in 1988 by Kretsovalis and Mah[^fn1] introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. Their algorithm requires creating the following graphs, which we will label $G_m$, $G_{m,x}$, $G^m$, $G_{i}^{m}$, and $G^i$. 
 
-1. Remove all streams where the overall mass flow rate is measured, making a new subgraph $G_m$.
-1. remove all 
-1. 
-
-
+![Kretsovalis Mah Graphs](./content/images/kretsovalis_graphs.svg)
 
 
 ## References
