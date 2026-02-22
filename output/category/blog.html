@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Math Mirror | articles in the "blog" category</title>
+    <link rel="shortcut icon" type="image/png" href="../favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+    <link href="/feeds/blog.atom.xml" type="application/atom+xml" rel="alternate" title="Math Mirror Categories Atom Feed" />
+    <link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="../theme/css/pygments.css" type="text/css" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Chris Blais" />
+</head>
+<body>
+    <header>
+        <nav style="overflow: hidden;">
+            <ul>
+
+                <li class="ephemeral selected"><a href="../category/blog.html">blog</a></li>
+                <li><a href="../">Home</a></li>
+                <li><a href="../pages/about-me.html">About Me</a></li>
+                <li><a href="../pages/contact-me.html">contact me</a></li>
+            </ul>
+        </nav>
+        <div class="header_box" style="height: 50px">
+        <h1><a href="../">
+            <image src='' class="avatar" width="50px" /><span class="site_title">Math Mirror</span>
+            </a></h1></div>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Feb 14, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="../graph-theory.html" rel="bookmark" title="Permanent Link to &quot;Graph Theory&quot;">Graph Theory</a>
+                </h2>
+
+                
+                
+
+                <p>The most basic equation to any chemical engineer is the following: </p>
+<div class="math">\begin{equation}
+    Acc = In - Out + Gen - Cons
+\end{equation}</div>
+<p>This is simply a reformulation of the conservation of mass. For this illustrative example, we will make this equation even simpler, removing the accumulation, generation, and consumption terms. This relies on the following assumptions: </p>
+<ul>
+<li>No reactions take place</li>
+<li>The fluid we are working with is incompressible, and the pipes/reactors are completely filled.</li>
+</ul>
+<p>We can consider a very simple plant network. Two units with a recycle loop, connected by four streams. </p>
+<p><img alt="Simple Plant Layout" src="../images/simple_layout.svg"></p>
+<p>This can be represented as a graph: </p>
+<p><img alt="Simple Plant Layout" src="../images/simple_graph.svg"></p>
+<p>let us make an example layout, with units A, B, and C as nodes, and streams 1 through 4 as edges. We can do this with networkx.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># make simple example problem</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="Simple Plant Layout" src="../images/nx_graph.svg"></p>
+<p>The work done back in 1988 by Kretsovalis and Mah [<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">1</a></sup>] introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. A simple explanation of this algorithm is as follows: </p>
+<ol>
+<li>Remove all streams where the overall mass flow rate is measured, making a new subgraph <span class="math">\(G_m\)</span>.</li>
+<li>remove all </li>
+<li></li>
+</ol>
+<h2>References</h2>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:fn1">
+<p>A. Kretsovalis and R. S. H. Mah, “Observability and redundancy classification in generalized process networks—II. Algorithms,” Computers &amp; Chemical Engineering, vol. 12, no. 7, pp. 689–703, Jul. 1988, doi: 10.1016/0098-1354(88)80008-5.&#160;<a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="../graph-theory.html">posted at 00:00</a>
+                    &nbsp;&middot;&nbsp;<a href="../category/blog.html" rel="tag">blog</a>
+                </div>
+            </article>            <h4 class="date">Feb 14, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="../publishing-a-page-to-github-pages.html" rel="bookmark" title="Permanent Link to &quot;Publishing a page to github pages&quot;">Publishing a page to github pages</a>
+                </h2>
+
+                
+                
+
+                <h2>command to generate and run local page</h2>
+<p>You do not need to remove or clean the output if you have this set in your config: </p>
+<div class="highlight"><pre><span></span><code>DELETE_OUTPUT_DIRECTORY = True
+</code></pre></div>
+
+<p>simply run this command: </p>
+<div class="highlight"><pre><span></span><code>pelican ; pelican --listen
+</code></pre></div>
+
+<h2>preview:</h2>
+<p>http://localhost:8000/ </p>
+<h2>publishing on github pages:</h2>
+<p>https://gist.github.com/JosefJezek/6053301
+g</p>
+<h2>Useful documentation:</h2>
+<p><a href="https://docs.getpelican.com/en/latest/quickstart.html">Running and testing locally</a></p>
+<p><a href="https://docs.getpelican.com/en/latest/tips.html">publishing to github</a></p>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="../publishing-a-page-to-github-pages.html">posted at 00:00</a>
+                    &nbsp;&middot;&nbsp;<a href="../category/blog.html" rel="tag">blog</a>
+                </div>
+            </article>
+
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/tcarwash/blue-penguin-dark">Blue Penguin Dark</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+</body>
+</html>
