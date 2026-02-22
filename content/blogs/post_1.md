@@ -17,11 +17,11 @@ This is simply a reformulation of the conservation of mass. For this illustrativ
 
 We can consider a very simple plant network. Two units with a recycle loop, connected by four streams. 
 
-![Simple Plant Layout](../images/simple_layout.svg)
+![Simple Plant Layout](images/simple_layout.svg)
 
 This can be represented as a graph: 
 
-![Simple Plant Layout](../images/simple_graph.svg)
+![Simple Plant Graph](images/simple_graph.svg)
 
 let us make an example layout, with units A, B, and C as nodes, and streams 1 through 4 as edges. We can do this with networkx.
 
@@ -40,7 +40,7 @@ g.add_edges_from([
 )
 ```
 
-![Simple Plant Layout](../images/nx_graph.svg)
+![Simple Graph](../images/nx_graph.svg)
 
 The work done back in 1988 by Kretsovalis and Mah [[^fn1]] introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. A simple explanation of this algorithm is as follows: 
 
