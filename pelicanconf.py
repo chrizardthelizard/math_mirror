@@ -1,6 +1,6 @@
 AUTHOR = 'Chris Blais'
 SITENAME = 'Math Mirror'
-SITEURL = ""
+SITEURL = "https://chrizardthelizard.github.io/math_mirror/"
 
 THEME = 'themes/blue-penguin-dark'
 
