@@ -50,9 +50,9 @@
 <li>The fluid we are working with is incompressible, and the pipes/reactors are completely filled.</li>
 </ul>
 <p>We can consider a very simple plant network. Two units with a recycle loop, connected by four streams. </p>
-<p><img alt="Simple Plant Layout" src="./content/images/simple_layout.svg"></p>
+<p><img alt="Simple Plant Layout" src="images/simple_layout.svg"></p>
 <p>This can be represented as a graph: </p>
-<p><img alt="Simple Plant Graph" src="./content/images/simple_graph.svg"></p>
+<p><img alt="Simple Plant Graph" src="images/simple_graph.svg"></p>
 <p>let us make an example layout, with units A, B, and C as nodes, and streams 1 through 4 as edges. We can do this with networkx.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># make simple example problem</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
@@ -68,9 +68,9 @@
 <span class="p">)</span>
 </code></pre></div>
 
-<p><img alt="Simple Graph" src="./content/images/nx_graph.svg"></p>
+<p><img alt="Simple Graph" src="images/nx_graph.svg"></p>
 <p>The work done back in 1988 by Kretsovalis and Mah<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">1</a></sup> introduces an algorithm called GENOBS to determine the observability for hydraulic balances and component balances using graph theory. Their algorithm requires creating the following graphs, which we will label <span class="math">\(G_m\)</span>, <span class="math">\(G_{m,x}\)</span>, <span class="math">\(G^m\)</span>, <span class="math">\(G_{i}^{m}\)</span>, and <span class="math">\(G^i\)</span>. </p>
-<p><img alt="Kretsovalis Mah Graphs" src="./content/images/kretsovalis_graphs.svg"></p>
+<p><img alt="Kretsovalis Mah Graphs" src="images/kretsovalis_graphs.svg"></p>
 <h2>References</h2>
 <div class="footnote">
 <hr>
