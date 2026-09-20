@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Math Mirror | Publishing a page to github pages</title>
+    <title>Math Mirror | PINNs</title>
     <link rel="shortcut icon" type="image/png" href="https://chrizardthelizard.github.io/math_mirror/favicon.png">
     <link rel="shortcut icon" type="image/x-icon" href="https://chrizardthelizard.github.io/math_mirror/favicon.ico">
     <link href="https://chrizardthelizard.github.io/math_mirror/feeds/blog.atom.xml" type="application/atom+xml" rel="alternate" title="Math Mirror Categories Atom Feed" />
@@ -30,51 +30,41 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Feb 14, 2026</h4>
+        <div id="content">            <h4 class="date">Jun 14, 2026</h4>
 
             <article class="post">
                 <h2 class="title">
-                    <a href="https://chrizardthelizard.github.io/math_mirror/publishing-a-page-to-github-pages.html" rel="bookmark" title="Permanent Link to &quot;Publishing a page to github pages&quot;">Publishing a page to github pages</a>
+                    <a href="https://chrizardthelizard.github.io/math_mirror/pinns.html" rel="bookmark" title="Permanent Link to &quot;PINNs&quot;">PINNs</a>
                 </h2>
 
                 
                 
 
-                <h1>command to generate and run local page</h1>
-<p>You do not need to remove or clean the output if you have this set in your config: </p>
-<div class="highlight"><pre><span></span><code>DELETE_OUTPUT_DIRECTORY = True
-</code></pre></div>
-
-<p>simply run this command: </p>
-<div class="highlight"><pre><span></span><code>pelican ; pelican --listen
-</code></pre></div>
-
-<h2>preview:</h2>
-<p>http://localhost:8000/ </p>
-<h1>publishing on github pages:</h1>
-<p><a href="https://gist.github.com/JosefJezek/6053301">Writeup on making custom home page and other QOL stuff</a>
-<a href="https://github.com/getpelican/pelican/blob/b5e20d7f6d8520bb277c7c261eed8c33a53ae4de/docs/tips.rst">pelican doc</a></p>
-<h2>Current Algorithm</h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># generate output folder using config file</span>
-pelican<span class="w"> </span>content<span class="w"> </span>-o<span class="w"> </span>output<span class="w"> </span>-s<span class="w"> </span>pelicanconf.py<span class="w"> </span>
-</code></pre></div>
-
-<h1>add output html/etc files to gh-pages branch</h1>
-<h1>generates github actions workflow for publishing automatically</h1>
-<div class="highlight"><pre><span></span><code>ghp-import<span class="w"> </span>output<span class="w"> </span>-b<span class="w"> </span>gh-pages<span class="w"> </span>
-</code></pre></div>
-
-<h1>push the branch and check your website</h1>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>gh-pages
-</code></pre></div>
-
-<h2>Useful documentation:</h2>
-<p><a href="https://docs.getpelican.com/en/latest/quickstart.html">Running and testing locally</a></p>
-<p><a href="https://docs.getpelican.com/en/latest/tips.html">publishing to github</a></p>
+                <h1>Non-Regularized NN</h1>
+<h1>Data regularization</h1>
+<p>Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">1</a></sup><sup id="fnref:fn2"><a class="footnote-ref" href="#fn:fn2">2</a></sup>. We would like to avoid overfitting, thus we regularize. </p>
+<h2>References</h2>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:fn1">
+<p>http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&#160;<a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:fn2">
+<p>https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&#160;<a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:fn3">
+<p>https://maziarraissi.github.io/PINNs/&#160;<a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:fn4">
+<p>https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&#160;<a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
                 <div class="clear"></div>
 
                 <div class="info">
-                    <a href="https://chrizardthelizard.github.io/math_mirror/publishing-a-page-to-github-pages.html">posted at 00:00</a>
+                    <a href="https://chrizardthelizard.github.io/math_mirror/pinns.html">posted at 00:00</a>
                     &nbsp;&middot;&nbsp;<a href="https://chrizardthelizard.github.io/math_mirror/category/blog.html" rel="tag">blog</a>
                 </div>
             </article>

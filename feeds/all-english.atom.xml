@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/all-english.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-02-14T00:00:00-05:00</updated><entry><title>Graph Theory</title><link href="https://chrizardthelizard.github.io/math_mirror/graph-theory.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/graph-theory.html</id><summary type="html">&lt;p&gt;Using Graphs to soft-sense and find redundancy&lt;/p&gt;</summary><content type="html">&lt;p&gt;The most basic equation to any chemical engineer is the following: &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/all-english.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-06-14T00:00:00-05:00</updated><entry><title>PINNs</title><link href="https://chrizardthelizard.github.io/math_mirror/pinns.html" rel="alternate"/><published>2026-06-14T00:00:00-05:00</published><updated>2026-06-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-06-14:/math_mirror/pinns.html</id><summary type="html">&lt;p&gt;A simple demonstration of physics informed neural networks&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Non-Regularized NN&lt;/h1&gt;
+&lt;h1&gt;Data regularization&lt;/h1&gt;
+&lt;p&gt;Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:fn2"&gt;&lt;a class="footnote-ref" href="#fn:fn2"&gt;2&lt;/a&gt;&lt;/sup&gt;. We would like to avoid overfitting, thus we regularize. &lt;/p&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;div class="footnote"&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id="fn:fn1"&gt;
+&lt;p&gt;http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:fn2"&gt;
+&lt;p&gt;https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:fn3"&gt;
+&lt;p&gt;https://maziarraissi.github.io/PINNs/&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id="fn:fn4"&gt;
+&lt;p&gt;https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</content><category term="blog"/></entry><entry><title>Graph Theory</title><link href="https://chrizardthelizard.github.io/math_mirror/graph-theory.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/graph-theory.html</id><summary type="html">&lt;p&gt;Using Graphs to soft-sense and find redundancy&lt;/p&gt;</summary><content type="html">&lt;p&gt;The most basic equation to any chemical engineer is the following: &lt;/p&gt;
 &lt;div class="math"&gt;\begin{equation}
     Acc = In - Out + Gen - Cons
 \end{equation}&lt;/div&gt;
@@ -100,7 +120,7 @@
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</content><category term="blog"/></entry><entry><title>Publishing a page to github pages</title><link href="https://chrizardthelizard.github.io/math_mirror/publishing-a-page-to-github-pages.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/publishing-a-page-to-github-pages.html</id><summary type="html">&lt;p&gt;Notes on Using Pelican&lt;/p&gt;</summary><content type="html">&lt;h2&gt;command to generate and run local page&lt;/h2&gt;
+&lt;/script&gt;</content><category term="blog"/></entry><entry><title>Publishing a page to github pages</title><link href="https://chrizardthelizard.github.io/math_mirror/publishing-a-page-to-github-pages.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/publishing-a-page-to-github-pages.html</id><summary type="html">&lt;p&gt;Notes on Using Pelican&lt;/p&gt;</summary><content type="html">&lt;h1&gt;command to generate and run local page&lt;/h1&gt;
 &lt;p&gt;You do not need to remove or clean the output if you have this set in your config: &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DELETE_OUTPUT_DIRECTORY = True
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -111,9 +131,23 @@
 
 &lt;h2&gt;preview:&lt;/h2&gt;
 &lt;p&gt;http://localhost:8000/ &lt;/p&gt;
-&lt;h2&gt;publishing on github pages:&lt;/h2&gt;
+&lt;h1&gt;publishing on github pages:&lt;/h1&gt;
 &lt;p&gt;&lt;a href="https://gist.github.com/JosefJezek/6053301"&gt;Writeup on making custom home page and other QOL stuff&lt;/a&gt;
 &lt;a href="https://github.com/getpelican/pelican/blob/b5e20d7f6d8520bb277c7c261eed8c33a53ae4de/docs/tips.rst"&gt;pelican doc&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Current Algorithm&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# generate output folder using config file&lt;/span&gt;
+pelican&lt;span class="w"&gt; &lt;/span&gt;content&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;output&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;pelicanconf.py&lt;span class="w"&gt; &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1&gt;add output html/etc files to gh-pages branch&lt;/h1&gt;
+&lt;h1&gt;generates github actions workflow for publishing automatically&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ghp-import&lt;span class="w"&gt; &lt;/span&gt;output&lt;span class="w"&gt; &lt;/span&gt;-b&lt;span class="w"&gt; &lt;/span&gt;gh-pages&lt;span class="w"&gt; &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1&gt;push the branch and check your website&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;git&lt;span class="w"&gt; &lt;/span&gt;push&lt;span class="w"&gt; &lt;/span&gt;origin&lt;span class="w"&gt; &lt;/span&gt;gh-pages
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;h2&gt;Useful documentation:&lt;/h2&gt;
 &lt;p&gt;&lt;a href="https://docs.getpelican.com/en/latest/quickstart.html"&gt;Running and testing locally&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://docs.getpelican.com/en/latest/tips.html"&gt;publishing to github&lt;/a&gt;&lt;/p&gt;</content><category term="blog"/></entry></feed>
