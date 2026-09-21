@@ -28,7 +28,7 @@
         </div>
     </header>
     <div id="wrapper">
-        <div id="content">            <h4 class="date">Jun 14, 2026</h4>
+        <div id="content">            <h4 class="date">Sep 20, 2026</h4>
 
             <article class="post">
                 <h2 class="title">
@@ -38,27 +38,119 @@
                 
                 
 
-                <h1>Non-Regularized NN</h1>
-<h1>Data regularization</h1>
-<p>Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">1</a></sup><sup id="fnref:fn2"><a class="footnote-ref" href="#fn:fn2">2</a></sup>. We would like to avoid overfitting, thus we regularize. </p>
+                <p>Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers<sup id="fnref:fn0"><a class="footnote-ref" href="#fn:fn0">1</a></sup>, but for this example we will start with the simpler loss function definition. </p>
+<p>To put this into practice, we will use a reaction model, and attempt to predict behavior using a conventional neural network, contrasted with a PINN. </p>
+<h1>Reaction Model</h1>
+<p>We can start our example with a simple chemistry model, with 2 irreversible reactions and 3 reactants, A, B, and C. </p>
+<div class="math">\begin{equation}
+    Acc = In - Out + Gen - Cons
+\end{equation}</div>
+<div class="math">\begin{equation*}
+A \xrightarrow{k_{1}} B
+\end{equation*}</div>
+<div class="math">\begin{equation*}
+B \xrightarrow{k_{2}} C
+\end{equation*}</div>
+<div class="math">\begin{align*}
+C_{A} &amp;= C_{A,0}e^{-k_{1}t} \\
+C_{B} &amp;= k_{1}C_{A,0}\left[\frac{ e^{-k_{1}t} - e^{-k_{2}t} }{k_2 - k_1}\right] \\
+C_{C} &amp;=  \frac{C_{A,0}}{k_{2} - k_{1}}[k_{2}[1-e^{-k_{1}t}] - k_{1}[1-e^{-k_{2}t}] ]
+\end{align*}</div>
+<p>lets make a plot of these functions:
+<img alt="Concentration Profiles" src="images/Conc_plt.png"></p>
+<p>We can add a homoscedastic error to each concentration:
+<img alt="Concentration error" src="images/conc_err.png"></p>
+<p>To start, we will focus on concentration A. We will split the data 50/50 for training and validation: 
+<img alt="Concentration error" src="images/ca_tv_split.png"></p>
+<h1>Non-Regularized NN</h1>
+<p>Lets start as simple as possible. We will use a linear model to start and make it more complex as we go.</p>
+<p><img alt="Linear Model" src="images/linear_nn.png"></p>
+<p><img alt="Simple NN" src="images/crappy_nn.png"></p>
+<h1>Note on data regularization</h1>
+<p>Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">2</a></sup><sup id="fnref:fn2"><a class="footnote-ref" href="#fn:fn2">3</a></sup>. We would like to avoid overfitting, thus we regularize. </p>
 <h2>References</h2>
 <div class="footnote">
 <hr>
 <ol>
+<li id="fn:fn0">
+<p>H. Chen, G. E. C. Flores, and C. Li, “Physics-informed neural networks with hard linear equality constraints,” Computers &amp; Chemical Engineering, vol. 189, p. 108764, Oct. 2024, doi: 10.1016/j.compchemeng.2024.108764.&#160;<a class="footnote-backref" href="#fnref:fn0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
 <li id="fn:fn1">
-<p>http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&#160;<a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&#160;<a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 <li id="fn:fn2">
-<p>https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&#160;<a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<p>https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&#160;<a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 <li id="fn:fn3">
-<p>https://maziarraissi.github.io/PINNs/&#160;<a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>https://maziarraissi.github.io/PINNs/&#160;<a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
 <li id="fn:fn4">
-<p>https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&#160;<a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<p>https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&#160;<a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
                 <div class="clear"></div>
 
                 <div class="info">

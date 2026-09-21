@@ -1,25 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/all-english.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-06-14T00:00:00-05:00</updated><entry><title>PINNs</title><link href="https://chrizardthelizard.github.io/math_mirror/pinns.html" rel="alternate"/><published>2026-06-14T00:00:00-05:00</published><updated>2026-06-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-06-14:/math_mirror/pinns.html</id><summary type="html">&lt;p&gt;A simple demonstration of physics informed neural networks&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Non-Regularized NN&lt;/h1&gt;
-&lt;h1&gt;Data regularization&lt;/h1&gt;
-&lt;p&gt;Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:fn2"&gt;&lt;a class="footnote-ref" href="#fn:fn2"&gt;2&lt;/a&gt;&lt;/sup&gt;. We would like to avoid overfitting, thus we regularize. &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/all-english.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-09-20T00:00:00-05:00</updated><entry><title>PINNs</title><link href="https://chrizardthelizard.github.io/math_mirror/pinns.html" rel="alternate"/><published>2026-09-20T00:00:00-05:00</published><updated>2026-09-20T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-09-20:/math_mirror/pinns.html</id><summary type="html">&lt;p&gt;A simple demonstration of physics informed neural networks&lt;/p&gt;</summary><content type="html">&lt;p&gt;Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers&lt;sup id="fnref:fn0"&gt;&lt;a class="footnote-ref" href="#fn:fn0"&gt;1&lt;/a&gt;&lt;/sup&gt;, but for this example we will start with the simpler loss function definition. &lt;/p&gt;
+&lt;p&gt;To put this into practice, we will use a reaction model, and attempt to predict behavior using a conventional neural network, contrasted with a PINN. &lt;/p&gt;
+&lt;h1&gt;Reaction Model&lt;/h1&gt;
+&lt;p&gt;We can start our example with a simple chemistry model, with 2 irreversible reactions and 3 reactants, A, B, and C. &lt;/p&gt;
+&lt;div class="math"&gt;\begin{equation}
+    Acc = In - Out + Gen - Cons
+\end{equation}&lt;/div&gt;
+&lt;div class="math"&gt;\begin{equation*}
+A \xrightarrow{k_{1}} B
+\end{equation*}&lt;/div&gt;
+&lt;div class="math"&gt;\begin{equation*}
+B \xrightarrow{k_{2}} C
+\end{equation*}&lt;/div&gt;
+&lt;div class="math"&gt;\begin{align*}
+C_{A} &amp;amp;= C_{A,0}e^{-k_{1}t} \\
+C_{B} &amp;amp;= k_{1}C_{A,0}\left[\frac{ e^{-k_{1}t} - e^{-k_{2}t} }{k_2 - k_1}\right] \\
+C_{C} &amp;amp;=  \frac{C_{A,0}}{k_{2} - k_{1}}[k_{2}[1-e^{-k_{1}t}] - k_{1}[1-e^{-k_{2}t}] ]
+\end{align*}&lt;/div&gt;
+&lt;p&gt;lets make a plot of these functions:
+&lt;img alt="Concentration Profiles" src="images/Conc_plt.png"&gt;&lt;/p&gt;
+&lt;p&gt;We can add a homoscedastic error to each concentration:
+&lt;img alt="Concentration error" src="images/conc_err.png"&gt;&lt;/p&gt;
+&lt;p&gt;To start, we will focus on concentration A. We will split the data 50/50 for training and validation: 
+&lt;img alt="Concentration error" src="images/ca_tv_split.png"&gt;&lt;/p&gt;
+&lt;h1&gt;Non-Regularized NN&lt;/h1&gt;
+&lt;p&gt;Lets start as simple as possible. We will use a linear model to start and make it more complex as we go.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Linear Model" src="images/linear_nn.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Simple NN" src="images/crappy_nn.png"&gt;&lt;/p&gt;
+&lt;h1&gt;Note on data regularization&lt;/h1&gt;
+&lt;p&gt;Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:fn2"&gt;&lt;a class="footnote-ref" href="#fn:fn2"&gt;3&lt;/a&gt;&lt;/sup&gt;. We would like to avoid overfitting, thus we regularize. &lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
 &lt;ol&gt;
+&lt;li id="fn:fn0"&gt;
+&lt;p&gt;H. Chen, G. E. C. Flores, and C. Li, “Physics-informed neural networks with hard linear equality constraints,” Computers &amp;amp; Chemical Engineering, vol. 189, p. 108764, Oct. 2024, doi: 10.1016/j.compchemeng.2024.108764.&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn0" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
 &lt;li id="fn:fn1"&gt;
-&lt;p&gt;http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 1 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;http://neuralnetworksanddeeplearning.com/ (book where I heard fermi quote)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn1" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:fn2"&gt;
-&lt;p&gt;https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 2 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;https://www.nature.com/articles/427297a (fermi quote about four parameter elephant)&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn2" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:fn3"&gt;
-&lt;p&gt;https://maziarraissi.github.io/PINNs/&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 3 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;https://maziarraissi.github.io/PINNs/&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:fn4"&gt;
-&lt;p&gt;https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 4 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&amp;#160;&lt;a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 5 in the text"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;</content><category term="blog"/></entry><entry><title>Graph Theory</title><link href="https://chrizardthelizard.github.io/math_mirror/graph-theory.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/graph-theory.html</id><summary type="html">&lt;p&gt;Using Graphs to soft-sense and find redundancy&lt;/p&gt;</summary><content type="html">&lt;p&gt;The most basic equation to any chemical engineer is the following: &lt;/p&gt;
+&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="blog"/></entry><entry><title>Graph Theory</title><link href="https://chrizardthelizard.github.io/math_mirror/graph-theory.html" rel="alternate"/><published>2026-02-14T00:00:00-05:00</published><updated>2026-02-14T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-02-14:/math_mirror/graph-theory.html</id><summary type="html">&lt;p&gt;Using Graphs to soft-sense and find redundancy&lt;/p&gt;</summary><content type="html">&lt;p&gt;The most basic equation to any chemical engineer is the following: &lt;/p&gt;
 &lt;div class="math"&gt;\begin{equation}
     Acc = In - Out + Gen - Cons
 \end{equation}&lt;/div&gt;
