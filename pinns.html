@@ -44,9 +44,6 @@
 <p>To put this into practice, we will use a reaction model, and attempt to predict behavior using a conventional neural network, contrasted with a PINN. </p>
 <h1>Reaction Model</h1>
 <p>We can start our example with a simple chemistry model, with 2 irreversible reactions and 3 reactants, A, B, and C. </p>
-<div class="math">\begin{equation}
-    Acc = In - Out + Gen - Cons
-\end{equation}</div>
 <div class="math">\begin{equation*}
 A \xrightarrow{k_{1}} B
 \end{equation*}</div>
@@ -58,16 +55,199 @@ C_{A} &amp;= C_{A,0}e^{-k_{1}t} \\
 C_{B} &amp;= k_{1}C_{A,0}\left[\frac{ e^{-k_{1}t} - e^{-k_{2}t} }{k_2 - k_1}\right] \\
 C_{C} &amp;=  \frac{C_{A,0}}{k_{2} - k_{1}}[k_{2}[1-e^{-k_{1}t}] - k_{1}[1-e^{-k_{2}t}] ]
 \end{align*}</div>
-<p>lets make a plot of these functions:
+<p>We can code this up in python:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">t_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">Ca0</span> <span class="o">=</span> <span class="mf">2.5</span>
+<span class="n">k1</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">k2</span> <span class="o">=</span> <span class="mf">0.51</span>
+
+<span class="k">def</span> <span class="nf">conc_a</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Ca0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k1</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+<span class="k">def</span> <span class="nf">conc_b</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">k1</span><span class="o">*</span><span class="n">Ca0</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k1</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k2</span><span class="o">*</span><span class="n">t</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">k2</span> <span class="o">-</span> <span class="n">k1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+<span class="k">def</span> <span class="nf">conc_c</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ca0</span><span class="o">/</span><span class="p">(</span><span class="n">k2</span> <span class="o">-</span> <span class="n">k1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">k2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k1</span><span class="o">*</span><span class="n">t</span><span class="p">))</span> <span class="o">-</span> <span class="n">k1</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k2</span><span class="o">*</span><span class="n">t</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+<span class="n">ca</span> <span class="o">=</span> <span class="n">conc_a</span><span class="p">(</span><span class="n">t_i</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">conc_b</span><span class="p">(</span><span class="n">t_i</span><span class="p">)</span>
+<span class="n">cc</span> <span class="o">=</span> <span class="n">conc_c</span><span class="p">(</span><span class="n">t_i</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$C_a$ true value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$C_b$ true value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$C_c$ true value&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Concentration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Running the code above gets us the following profiles. For convenience, We'll leave it unitless. 
 <img alt="Concentration Profiles" src="images/Conc_plt.png"></p>
-<p>We can add a homoscedastic error to each concentration:
-<img alt="Concentration error" src="images/conc_err.png"></p>
-<p>To start, we will focus on concentration A. We will split the data 50/50 for training and validation: 
-<img alt="Concentration error" src="images/ca_tv_split.png"></p>
+<p>We can add a homoscedastic error to each concentration. We'll assume normally distributed data, with a standard deviation of 0.05:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># generate homoscedastic noisy data</span>
+<span class="n">ca_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">ca</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ca_n</span> <span class="o">=</span> <span class="n">ca</span> <span class="o">+</span> <span class="n">ca_e</span>
+<span class="n">cb_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">cb</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">cb_n</span> <span class="o">=</span> <span class="n">cb</span> <span class="o">+</span> <span class="n">cb_e</span>
+<span class="n">cc_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">cc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">cc_n</span> <span class="o">=</span> <span class="n">cc</span> <span class="o">+</span> <span class="n">cc_e</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">ca_n</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$C_a$ with error&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">cb_n</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$C_b$ with error&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="n">t_i</span><span class="p">,</span> <span class="n">cc_n</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$C_c$ with error&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+
+<p><img alt="Concentration error" src="images/conc_err.png"></p>
+<p>Great! now we have some data to play with. For simplicity, we will focus on concentration A as we build our neural network, but extending the model is as simple as adding more outputs for our training and validation data. Focusing on <span class="math">\(C_a\)</span>, we will split the data 50/50 for training and validation: </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># randomly select values using a shuffled boolean array</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="mi">50</span> <span class="o">+</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+<span class="n">ti_train</span> <span class="o">=</span> <span class="n">t_i</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">ca_train</span> <span class="o">=</span> <span class="n">ca_n</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">cb_train</span> <span class="o">=</span> <span class="n">cb_n</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">cc_train</span> <span class="o">=</span> <span class="n">cc_n</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+<span class="n">ti_val</span> <span class="o">=</span> <span class="n">t_i</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">ca_val</span> <span class="o">=</span> <span class="n">ca_n</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">cb_val</span> <span class="o">=</span> <span class="n">cb_n</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+<span class="n">cc_val</span> <span class="o">=</span> <span class="n">cc_n</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="n">ti_train</span><span class="p">,</span> <span class="n">ca_train</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$C_a$ train&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span> <span class="n">ti_val</span><span class="p">,</span> <span class="n">ca_val</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;$C_a$ validation&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+
+<p><img alt="Concentration error" src="images/ca_tv_split.png"></p>
+<p>We have a final step for inputting these data to a neural network. We need to transform them into tensors. We can use the built-in <code>Dataset</code> and <code>Dataloader</code> objects in torch (adapted from <sup id="fnref:fn4"><a class="footnote-ref" href="#fn:fn4">5</a></sup>):</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># select parts of data for training</span>
+
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">ti_train</span>
+<span class="n">Y_train</span> <span class="o">=</span> <span class="n">ca_train</span>
+
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">ti_val</span>
+<span class="n">Y_test</span> <span class="o">=</span> <span class="n">ca_val</span>
+
+<span class="c1"># Convert data to torch tensors</span>
+<span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
+
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
+
+<span class="c1"># Instantiate training and test data</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">)</span>
+<span class="n">test_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Check inputs</span>
+<span class="k">for</span> <span class="n">batch</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batch: </span><span class="si">{</span><span class="n">batch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X shape: </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;y shape: </span><span class="si">{</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div>
+
+<p>output:</p>
+<div class="highlight"><pre><span></span><code>Batch:<span class="w"> </span><span class="m">1</span>
+X<span class="w"> </span>shape:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">50</span>,<span class="w"> </span><span class="m">1</span><span class="o">])</span>
+y<span class="w"> </span>shape:<span class="w"> </span>torch.Size<span class="o">([</span><span class="m">50</span>,<span class="w"> </span><span class="m">1</span><span class="o">])</span>
+</code></pre></div>
+
+<p>Viola! Now our data is ready to be input to our neural network. </p>
 <h1>Non-Regularized NN</h1>
-<p>Lets start as simple as possible. We will use a linear model to start and make it more complex as we go.</p>
+<p>Lets start as simple as possible. We will begin with a linear model and make it more complex as we go.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">optim</span>
+
+<span class="n">input_dim</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">output_dim</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># Short-cut way to define a 1-to-1 network without a class</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># Training Loop</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="c1"># Forward pass: Compute predicted y by passing x to the model</span>
+    <span class="n">pred_Y</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="c1"># Compute loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pred_Y</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+    <span class="c1"># Zero gradients, perform a backward pass, and update the weights</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="c1"># Test the model</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ti_val</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;linear nn predicted&quot;</span><span class="p">)</span>      
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_i</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Actual Chemistry&quot;</span><span class="p">)</span>   
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+
 <p><img alt="Linear Model" src="images/linear_nn.png"></p>
+<p>A more complex model requires adding more layers. </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># add ReLU activation layer</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="c1"># Define Loss Function and Optimizer</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>  <span class="c1"># Mean Squared Error loss</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>  <span class="c1"># Stochastic Gradient Descent</span>
+
+<span class="c1"># Training Loop</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span>
+    <span class="c1"># Forward pass: Compute predicted y by passing x to the model</span>
+    <span class="n">pred_Y</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="c1"># Compute loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pred_Y</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+    <span class="c1"># Zero gradients, perform a backward pass, and update the weights</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="c1"># We&#39;ve made a really crappy nn for predicting concentration!</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ti_val</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;crappy nn predicted&quot;</span><span class="p">)</span>      
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_i</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Actual Chemistry&quot;</span><span class="p">)</span>   
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;C:\Users\chris\Documents\04_writing_blog\math_mirror\content\images\crappy_nn.png&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_file</span><span class="p">)</span>
+</code></pre></div>
+
 <p><img alt="Simple NN" src="images/crappy_nn.png"></p>
+<p>This model is fine within the range of the training data, but it fails spectacularly for points that occurr. We can make our model more sane using regularization. </p>
 <h1>Note on data regularization</h1>
 <p>Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">2</a></sup><sup id="fnref:fn2"><a class="footnote-ref" href="#fn:fn2">3</a></sup>. We would like to avoid overfitting, thus we regularize. </p>
 <h2>References</h2>
