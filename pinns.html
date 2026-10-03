@@ -40,7 +40,7 @@
                 
                 
 
-                <p>Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers<sup id="fnref:fn0"><a class="footnote-ref" href="#fn:fn0">1</a></sup>, but for this example we will start with the simpler loss function definition. </p>
+                <p>Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints<sup id="fnref:fn3"><a class="footnote-ref" href="#fn:fn3">4</a></sup>. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers<sup id="fnref:fn0"><a class="footnote-ref" href="#fn:fn0">1</a></sup>, but for this example we will start with the simpler loss function definition. </p>
 <p>To put this into practice, we will use a reaction model, and attempt to predict behavior using a conventional neural network, contrasted with a PINN. </p>
 <h1>Reaction Model</h1>
 <p>We can start our example with a simple chemistry model, with 2 irreversible reactions and 3 reactants, A, B, and C. </p>
@@ -247,7 +247,71 @@ y<span class="w"> </span>shape:<span class="w"> </span>torch.Size<span class="o"
 </code></pre></div>
 
 <p><img alt="Simple NN" src="images/crappy_nn.png"></p>
-<p>This model is fine within the range of the training data, but it fails spectacularly for points that occurr. We can make our model more sane using regularization. </p>
+<p>This model is fine within the range of the training data, but it fails spectacularly for points that occurr. We could make our model more sane using regularization, but for this system we can augment the loss function to account for the known kinetics of the system.</p>
+<h1>Adding a Physics Loss term</h1>
+<p>The Physics loss term will be the difference between the partial derivative for <span class="math">\(C_a\)</span> according to the model, minus the actual equation for <span class="math">\(C_a\)</span>: </p>
+<div class="math">\begin{equation}
+    L_{pinn} = \left. \frac{\partial C_a}{\partial t} \right|_{t_i} - k_1 C_a(t_i)
+\end{equation}</div>
+<p>we also need to return the derivative, which we can do with the torch autograd function. Putting it all together, our code will look like the following (adapted from an excellent article by Theo Wolf<sup id="fnref2:fn4"><a class="footnote-ref" href="#fn:fn4">5</a></sup>).</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the partial derivative of </span>
+<span class="sd">    an output with respect to an input.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span>
+        <span class="n">outputs</span><span class="p">,</span> 
+        <span class="n">inputs</span><span class="p">,</span> 
+        <span class="n">grad_outputs</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">outputs</span><span class="p">),</span> 
+        <span class="n">create_graph</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">physics_loss</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The physics loss of the model&quot;&quot;&quot;</span>
+    <span class="c1"># run the collocation points through the network</span>
+    <span class="n">cas</span><span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+    <span class="c1"># get the gradient</span>
+    <span class="n">dCa</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">cas</span><span class="p">,</span> <span class="n">ts</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># compute the ODE</span>
+    <span class="n">ode</span> <span class="o">=</span>  <span class="n">dCa</span> <span class="o">+</span> <span class="n">k1</span><span class="o">*</span><span class="p">(</span><span class="n">cas</span><span class="p">)</span>
+    <span class="c1"># MSE of ODE</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ode</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+
+<p>We can finally implement this in our model!</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># add ReLU activation layer</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="c1"># Define Loss Function and Optimizer</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>  <span class="c1"># Mean Squared Error loss</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>  <span class="c1"># Stochastic Gradient Descent</span>
+
+<span class="c1"># Training Loop</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5000</span><span class="p">):</span>
+    <span class="c1"># Forward pass: Compute predicted y by passing x to the model</span>
+    <span class="n">pred_Y</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="c1"># Compute loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pred_Y</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">+=</span> <span class="n">physics_loss</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span><span class="n">ts</span><span class="o">=</span><span class="n">X</span> <span class="p">)</span>
+
+    <span class="c1"># Zero gradients, perform a backward pass, and update the weights</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="c1"># We&#39;ve made a really crappy nn for predicting concentration!</span>
+<span class="n">test_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ti_val</span><span class="p">,</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;crappy nn predicted&quot;</span><span class="p">)</span>      
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_i</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Actual Chemistry&quot;</span><span class="p">)</span>   
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</code></pre></div>
+
+<p>As we can see below, the PINN fits the data nicely:</p>
+<p><img alt="Linear Model" src="images/crappy_Pinn.png"></p>
 <h1>Note on data regularization</h1>
 <p>Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk<sup id="fnref:fn1"><a class="footnote-ref" href="#fn:fn1">2</a></sup><sup id="fnref:fn2"><a class="footnote-ref" href="#fn:fn2">3</a></sup>. We would like to avoid overfitting, thus we regularize. </p>
 <h2>References</h2>
@@ -267,7 +331,7 @@ y<span class="w"> </span>shape:<span class="w"> </span>torch.Size<span class="o"
 <p>https://maziarraissi.github.io/PINNs/&#160;<a class="footnote-backref" href="#fnref:fn3" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
 <li id="fn:fn4">
-<p>https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&#160;<a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+<p>https://medium.com/@theo.wolf/physics-informed-neural-networks-a-simple-tutorial-with-pytorch-f28a890b874a&#160;<a class="footnote-backref" href="#fnref:fn4" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:fn4" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
