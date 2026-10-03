@@ -4,7 +4,7 @@ Category: blog
 Author: Chris Blais
 Summary: A simple demonstration of physics informed neural networks
 
-Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers[^fn0], but for this example we will start with the simpler loss function definition. 
+Physics informed neural networks, or PINNs, are a way to coerce a neural network to give answers that agree with physical and chemical constraints[^fn3]. Essentially, they are a neural network with a custom loss function. This is an oversimplification, and excludes existing work where the backwards differentiation is leveraged to build constraints into hidden layers[^fn0], but for this example we will start with the simpler loss function definition. 
 
 To put this into practice, we will use a reaction model, and attempt to predict behavior using a conventional neural network, contrasted with a PINN. 
 
@@ -233,7 +233,75 @@ plt.savefig(fig_file)
 ```
 ![Simple NN](images/crappy_nn.png)
 
-This model is fine within the range of the training data, but it fails spectacularly for points that occurr. We can make our model more sane using regularization. 
+This model is fine within the range of the training data, but it fails spectacularly for points that occurr. We could make our model more sane using regularization, but for this system we can augment the loss function to account for the known kinetics of the system.
+
+# Adding a Physics Loss term
+The Physics loss term will be the difference between the partial derivative for $C_a$ according to the model, minus the actual equation for $C_a$: 
+
+\begin{equation}
+    L_{pinn} = \left. \frac{\partial C_a}{\partial t} \right|_{t_i} - k_1 C_a(t_i)
+\end{equation}
+
+we also need to return the derivative, which we can do with the torch autograd function. Putting it all together, our code will look like the following (adapted from an excellent article by Theo Wolf[^fn4]).
+```python3
+def grad(outputs, inputs):
+    """Computes the partial derivative of 
+    an output with respect to an input."""
+    return torch.autograd.grad(
+        outputs, 
+        inputs, 
+        grad_outputs=torch.ones_like(outputs), 
+        create_graph=True
+    )
+
+def physics_loss(model: torch.nn.Module, ts):
+    """The physics loss of the model"""
+    # run the collocation points through the network
+    cas= model(ts)
+    # get the gradient
+    dCa = grad(cas, ts)[0]
+    # compute the ODE
+    ode =  dCa + k1*(cas)
+    # MSE of ODE
+    return torch.mean(ode**2)
+```
+We can finally implement this in our model!
+```python3
+# add ReLU activation layer
+model = nn.Sequential(
+    nn.Linear(1, 200),
+    nn.ReLU(),
+    nn.Linear(200, 1)
+)
+# Define Loss Function and Optimizer
+criterion = nn.MSELoss()  # Mean Squared Error loss
+optimizer = optim.SGD(model.parameters(), lr=0.01)  # Stochastic Gradient Descent
+
+# Training Loop
+for epoch in range(5000):
+    # Forward pass: Compute predicted y by passing x to the model
+    pred_Y = model(X)
+    
+    # Compute loss
+    loss = criterion(pred_Y, Y)
+    loss += physics_loss(model=model,ts=X )
+    
+    # Zero gradients, perform a backward pass, and update the weights
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+# We've made a really crappy nn for predicting concentration!
+test_input = torch.from_numpy(X_test.astype(np.float32)).view(len(X_test), 1)
+predicted = model(test_input).detach().numpy()
+
+plt.scatter(ti_val, predicted, marker="*", color="blue", label="crappy nn predicted")      
+plt.plot(t_i, ca, color="orange", label="Actual Chemistry")   
+plt.legend()
+```
+As we can see below, the PINN fits the data nicely:
+
+![Linear Model](images/crappy_Pinn.png)
 
 # Note on data regularization
 Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk[^fn1][^fn2]. We would like to avoid overfitting, thus we regularize. 
