@@ -270,7 +270,7 @@ y&lt;span class="w"&gt; &lt;/span&gt;shape:&lt;span class="w"&gt; &lt;/span&gt;t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As we can see below, the PINN fits the data nicely:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="PINN model" src="images/crappy_Pinn.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="PINN model" src="images/crappy_pinn.png"&gt;&lt;/p&gt;
 &lt;h1&gt;Note on data regularization&lt;/h1&gt;
 &lt;p&gt;Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:fn2"&gt;&lt;a class="footnote-ref" href="#fn:fn2"&gt;3&lt;/a&gt;&lt;/sup&gt;. We would like to avoid overfitting, thus we regularize. &lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
