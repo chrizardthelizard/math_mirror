@@ -10,7 +10,7 @@ In grad school, I primarily worked on simulating things. I became an expert in r
 
 In my current life, I have tried to combine these two specializations. I am particularly interested in new ways to optimizing sensor networks, in light of their observability, redundancy, controllability, etc.
 
-If you'd like to know more, have a look at my CV, and feel free to send me an email, or message me on LinkedIn.
-[CV](files/Christopher Blais CV 2026_10_07.pdf)
+If you'd like to know more, have a look at my [CV]({attach}/images/Christopher_Blais_CV_2026_10_07.pdf), and feel free to send me an email, or message me on LinkedIn.
+
 
 

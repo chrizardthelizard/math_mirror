@@ -7,7 +7,7 @@ THEME = 'themes/blue-penguin-dark'
 PATH = "content"
 PAGE_PATHS = ["pages"]
 ARTICLE_PATHS = ["blogs"]
-STATIC_PATHS = ["images"]
+STATIC_PATHS = ["images", "files"]
 
 TIMEZONE = 'EST'
 
