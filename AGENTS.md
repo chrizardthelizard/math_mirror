@@ -2,7 +2,7 @@
 
 ## Project shape
 - Pelican static site ("Math Mirror"). Source of truth is `content/`; generated site is `output/`; the live site is GitHub Pages branch `gh-pages`, not `main`.
-- Theme is `themes/blue-penguin-dark` inside the `themes/` git submodule (upstream `getpelican/pelican-themes`). Theme changes belong in the submodule pin, not local edits that the parent repo won't carry.
+- Theme is `themes/blue-penguin-dark` inside the `themes/` git submodule (upstream `getpelican/pelican-themes`). Theme changes belong in the submodule pin, not local edits that the parent repo won't carry; repo-local overrides go in `theme_overrides/` via `THEME_TEMPLATES_OVERRIDES` (currently `article_stub.html`: summaries on list pages, full content on article pages, and no `posted at`/category footer).
 
 ## Environment / setup
 - No `requirements.txt`, `pyproject.toml`, lockfile, or test/lint config. Dependencies live in conda env `pelican` (Python 3.14, Pelican 4.11); the default `python` has no Pelican. Use `conda activate pelican` or `conda run -n pelican ...` before building.
@@ -13,6 +13,7 @@
 - Build: `pelican content -o output -s pelicanconf.py`
 - Rebuild on change: `pelican -r content -o output -s pelicanconf.py`
 - Preview at localhost:8000: `pelican -l content -o output -s pelicanconf.py`
+- Theme nav links (Home, About, Blog) are built from `SITEURL`, so they point to the live GitHub Pages site even in local previews; use relative links in page bodies or navigate directly to `/blog/` when testing locally.
 - `DELETE_OUTPUT_DIRECTORY = True` in both configs: every build wipes `output/`. That directory is tracked on `main` only from the initial commit and is not maintained there, so expect large diffs — don't commit generated output with source changes unless intentional.
 - `Makefile` targets `public/`, not the deployed `output/`; plain `make html` does not refresh the site.
 - `invoke gh_pages` in `tasks.py` is set to branch `main`, but the deployed branch is `gh-pages`. Use the documented flow instead: `pelican content -o output -s pelicanconf.py` → `ghp-import output -b gh-pages` → `git push origin gh-pages` (`ghp-import` is installed in the `pelican` env).

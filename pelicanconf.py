@@ -3,6 +3,7 @@ SITENAME = 'Math Mirror'
 SITEURL = "https://chrizardthelizard.github.io/math_mirror/"
 
 THEME = 'themes/blue-penguin-dark'
+THEME_TEMPLATES_OVERRIDES = ['theme_overrides']
 
 PATH = "content"
 PAGE_PATHS = ["pages"]
