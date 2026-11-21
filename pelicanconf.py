@@ -9,6 +9,12 @@ PAGE_PATHS = ["pages"]
 ARTICLE_PATHS = ["blogs"]
 STATIC_PATHS = ["images", "files"]
 
+# The homepage is a page (content/pages/home.md); keep the article list at /blog/
+INDEX_SAVE_AS = 'blog/index.html'
+MENU_INTERNAL_PAGES = (
+    ('Blog', 'blog/index.html', 'blog/index.html'),
+)
+
 TIMEZONE = 'EST'
 
 DEFAULT_LANG = 'English'
