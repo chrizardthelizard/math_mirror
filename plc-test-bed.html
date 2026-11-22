@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+        <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Math Mirror | PLC Test Bed</title>
+    <link rel="shortcut icon" type="image/png" href="https://chrizardthelizard.github.io/math_mirror/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="https://chrizardthelizard.github.io/math_mirror/favicon.ico">
+    <link href="https://chrizardthelizard.github.io/math_mirror/feeds/blog.atom.xml" type="application/atom+xml" rel="alternate" title="Math Mirror Categories Atom Feed" />
+    <link rel="stylesheet" href="https://chrizardthelizard.github.io/math_mirror/theme/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="https://chrizardthelizard.github.io/math_mirror/theme/css/pygments.css" type="text/css" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Chris Blais" />
+
+</head>
+<body>
+    <header>
+        <nav style="overflow: hidden;">
+            <ul>
+                <li><a href="https://chrizardthelizard.github.io/math_mirror/">Home</a></li>
+                <li><a href="https://chrizardthelizard.github.io/math_mirror/pages/about-me.html">About Me</a></li>
+                <li><a href="https://chrizardthelizard.github.io/math_mirror/pages/contact-me.html">Contact Me</a></li>
+                <li><a href="https://chrizardthelizard.github.io/math_mirror/blog/index.html">Blog</a></li>
+            </ul>
+        </nav>
+        <div class="header_box" style="height: 50px">
+        <h1><a href="https://chrizardthelizard.github.io/math_mirror/">
+            <image src='' class="avatar" width="50px" /><span class="site_title">Math Mirror</span>
+            </a></h1></div>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Nov 22, 2026</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="https://chrizardthelizard.github.io/math_mirror/plc-test-bed.html" rel="bookmark" title="Permanent Link to &quot;PLC Test Bed&quot;">PLC Test Bed</a>
+                </h2>
+
+                
+                
+
+                <h1>Overview</h1>
+<p>I have wanted some sort of cheap test PLC system for a while now, and have finally decided to start building. My constraints are that it is cheap, realistic, and safe to leave running. My experience with cheap controllers has been solely Arduino and Raspberry Pi, which are excellent for prototyping electronics, but less useful for practice implementing server-based applications that Industry 4.0 systems require. My plan to start is simple: </p>
+<ol>
+<li>Build a small enclosure to house a power supply and PLC.</li>
+<li>Create a simple program that simulates noisy analog data.</li>
+<li>Connect the PLC to an OPC-UA server.</li>
+<li>Feed the tag information to a python program, where I can build digital twins, run MPC, create dashboards, and other data-sciency things. </li>
+</ol>
+<p>I will start with the materials, and then get into how everything is wired together. We will finish with a test run of a simple PLC program. </p>
+<h2>Materials</h2>
+<p>I am starting with the following materials. </p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Part #</th>
+<th>Price (USD)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Click Plus PLC</td>
+<td>C2-01CPU</td>
+<td>$110.00</td>
+</tr>
+<tr>
+<td>Click 1.3A Power Supply</td>
+<td>C0-01AC</td>
+<td>$73.00</td>
+</tr>
+<tr>
+<td>Eaton Miniature Circuit Breaker 1A</td>
+<td>FAZ-D1-1-NA-L-SP</td>
+<td>$29.00</td>
+</tr>
+<tr>
+<td>DIN rail</td>
+<td>DN-R35S1-2</td>
+<td>9.25</td>
+</tr>
+<tr>
+<td>6x6x4 Junction Box</td>
+<td>n/a</td>
+<td>$22.99</td>
+</tr>
+<tr>
+<td>Power supply cord</td>
+<td>n/a</td>
+<td>$11.99</td>
+</tr>
+</tbody>
+</table>
+<p>A rough wiring diagram is shown below. As an aside, typically the enclosure should have about 2" clearance on each side for the controller, which is not the case with the J-box I am using. In general, the J-Box is there to protect the PLC, and keep the wiring behind a barrier when the PLC is running. In the future, I may splurge for a NFPA compliant setup, but for now it's fine if it's a little tight. </p>
+<p><img alt="PLC wiring" src="images/plc_wiring.png"></p>
+<p>The recommended wiring from the manual does not require a breaker, but I liked the option of having a hard off switch when not in use. </p>
+<h2>Construction</h2>
+<p>For my own morale, I am posting my progress here, but as of November 22 I am still waiting on a few components. I have a very rinky-dink mount for the jbox that would probably insult any halfway decent carpenter. I've added a few progress pics below, please ignore the junk on my desk:</p>
+<p><img alt="PLC wiring" src="images/jbox_open.jpg"></p>
+<p><img alt="PLC wiring" src="images/jbox_side.jpg"></p>
+<p><img alt="PLC wiring" src="images/jbox_closed.jpg"></p>
+<p>To be continued!</p>
+                <div class="clear"></div>
+
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/tcarwash/blue-penguin-dark">Blue Penguin Dark</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+</body>
+</html>
