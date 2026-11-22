@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror - blog</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/blog.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-11-22T00:00:00-05:00</updated><entry><title>PLC Test Bed</title><link href="https://chrizardthelizard.github.io/math_mirror/plc-test-bed.html" rel="alternate"/><published>2026-11-22T00:00:00-05:00</published><updated>2026-11-22T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-11-22:/math_mirror/plc-test-bed.html</id><summary type="html">&lt;p&gt;Test bed PLC&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Overview&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Math Mirror - blog</title><link href="https://chrizardthelizard.github.io/math_mirror/" rel="alternate"/><link href="https://chrizardthelizard.github.io/math_mirror/feeds/blog.atom.xml" rel="self"/><id>https://chrizardthelizard.github.io/math_mirror/</id><updated>2026-11-22T00:00:00-05:00</updated><entry><title>PLC Test Bed</title><link href="https://chrizardthelizard.github.io/math_mirror/plc-test-bed.html" rel="alternate"/><published>2026-11-22T00:00:00-05:00</published><updated>2026-11-22T00:00:00-05:00</updated><author><name>Chris Blais</name></author><id>tag:chrizardthelizard.github.io,2026-11-22:/math_mirror/plc-test-bed.html</id><summary type="html">&lt;p&gt;Design and build for a simple test bed PLC.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Overview&lt;/h1&gt;
 &lt;p&gt;I have wanted some sort of cheap test PLC system for a while now, and have finally decided to start building. My constraints are that it is cheap, realistic, and safe to leave running. My experience with cheap controllers has been solely Arduino and Raspberry Pi, which are excellent for prototyping electronics, but less useful for practice implementing server-based applications that Industry 4.0 systems require. My plan to start is simple: &lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Build a small enclosure to house a power supply and PLC.&lt;/li&gt;
@@ -37,7 +37,7 @@
 &lt;tr&gt;
 &lt;td&gt;DIN rail&lt;/td&gt;
 &lt;td&gt;DN-R35S1-2&lt;/td&gt;
-&lt;td&gt;9.25&lt;/td&gt;
+&lt;td&gt;$9.25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;6x6x4 Junction Box&lt;/td&gt;
@@ -331,8 +331,6 @@ y&lt;span class="w"&gt; &lt;/span&gt;shape:&lt;span class="w"&gt; &lt;/span&gt;t
 
 &lt;p&gt;As we can see below, the PINN fits the data nicely:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="PINN model" src="images/crappy_pinn.png"&gt;&lt;/p&gt;
-&lt;h1&gt;Note on data regularization&lt;/h1&gt;
-&lt;p&gt;Physics informed neural networks are a special case of regularization, so we will start by learning that concept. At it's most basic, regularization prevents overfitting. A model with many parameters can fit almost any dataset near perfectly, but this sort of naive approach can lead to a model that is unphysical. To paraphrase Enrico Fermi, with enough arbitrary parameters, you can fit an elephant, and with one more you can make it wiggle it's trunk&lt;sup id="fnref:fn1"&gt;&lt;a class="footnote-ref" href="#fn:fn1"&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;sup id="fnref:fn2"&gt;&lt;a class="footnote-ref" href="#fn:fn2"&gt;3&lt;/a&gt;&lt;/sup&gt;. We would like to avoid overfitting, thus we regularize. &lt;/p&gt;
 &lt;h2&gt;References&lt;/h2&gt;
 &lt;div class="footnote"&gt;
 &lt;hr&gt;
