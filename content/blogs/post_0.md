@@ -18,6 +18,8 @@ pelican ; pelican --listen
 ## preview:
 http://localhost:8000/ 
 
+Note: some links from the local version reference the live site. This can be bypassed by putting the name of the page after the port (8000)
+
 # publishing on github pages: 
 [Writeup on making custom home page and other QOL stuff](https://gist.github.com/JosefJezek/6053301)
 [pelican doc](https://github.com/getpelican/pelican/blob/b5e20d7f6d8520bb277c7c261eed8c33a53ae4de/docs/tips.rst)
